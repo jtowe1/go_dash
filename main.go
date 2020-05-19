@@ -7,10 +7,9 @@ import (
 )
 
 func main() {
-
     cpuInfo, err := cpu.GetInfo()
     if err != nil {
         log.Fatal(err)
     }
-    fmt.Printf("%s\n", cpuInfo)
+    fmt.Printf("%s\n", cpuInfo.Brand)
 }
