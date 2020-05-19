@@ -1,12 +1,16 @@
 package main
 
 import (
-	"github.com/rivo/tview"
+    "fmt"
+    "jeremiahtowe.com/go_dash/pkg/systemProperties/cpu"
+    "log"
 )
 
 func main() {
-    box := tview.NewBox().SetBorder(true).SetTitle("Hello, world!")
-    if err := tview.NewApplication().SetRoot(box, true).Run() ; err != nil {
-        panic(err)
+
+    cpuInfo, err := cpu.GetInfo()
+    if err != nil {
+        log.Fatal(err)
     }
+    fmt.Printf("%s\n", cpuInfo)
 }
