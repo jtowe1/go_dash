@@ -12,12 +12,12 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    fmt.Printf("%s\n", cpuInfo.Brand)
+    fmt.Printf("%s\n", (*cpuInfo).Brand)
 
     weatherInfo, err := weather.GetWeather()
     if err != nil {
         log.Fatal(err)
     }
 
-    fmt.Printf("%d °F\n", int(weatherInfo.Main.Temp))
+    fmt.Printf("%d °F\n", int((*weatherInfo).Main.Temp))
 }
