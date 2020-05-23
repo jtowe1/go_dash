@@ -9,7 +9,7 @@ type Info struct {
 }
 
 func GetInfo() (*Info, error) {
-	info := &Info{}
+	var info Info
 
 	out, err := exec.Command("sysctl","-n",  "machdep.cpu.brand_string").Output()
 	if err != nil {
@@ -17,5 +17,5 @@ func GetInfo() (*Info, error) {
 	}
 
 	info.Brand = string(out)
-	return info, nil
+	return &info, nil
 }
