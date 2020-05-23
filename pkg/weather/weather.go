@@ -27,7 +27,7 @@ type Main struct {
 	FeelsLike float64 `json:"feels_like"`
 }
 
-func GetWeather() (*Weather, error){
+func GetWeather() (*Data, error){
 	apiKey := os.Getenv("OPEN_WEATHER_MAP_API_KEY")
 	response, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=kennesaw&appid=" + apiKey)
 	if err != nil {
@@ -43,7 +43,7 @@ func GetWeather() (*Weather, error){
 
 	data, _ := ioutil.ReadAll(response.Body)
 
-	var weatherData Weather
+	var weatherData Data
 
 	err = json.Unmarshal(data, &weatherData)
 	if err != nil {
@@ -51,7 +51,13 @@ func GetWeather() (*Weather, error){
 		return nil, err
 	}
 
-	weatherData.Main.Temp = (((weatherData.Main.Temp - 273.15) * 9) / 5) + 32
+	kelvinToFahrenheit(&weatherData.Main.Temp)
+	kelvinToFahrenheit(&weatherData.Main.FeelsLike)
 
 	return &weatherData, nil
 }
+
+func kelvinToFahrenheit(tempInKelvin *float64) {
+	*tempInKelvin = (((*tempInKelvin - 273.15) * 9) / 5) + 32
+}
+
