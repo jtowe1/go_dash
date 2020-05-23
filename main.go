@@ -19,5 +19,7 @@ func main() {
         log.Fatal(err)
     }
 
-    fmt.Printf("%d °F\n", int((*weatherInfo).Main.Temp))
+    fmt.Printf("Weather in: %s\n", (*weatherInfo).Name)
+    fmt.Printf("Current temp: %d °F\n", int((*weatherInfo).Main.Temp))
+    fmt.Printf("Feels like: %d °F\n", int((*weatherInfo).Main.FeelsLike))
 }
