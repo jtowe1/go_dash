@@ -2,6 +2,7 @@ package weather
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -31,14 +32,13 @@ func GetWeather() (*Data, error){
 	apiKey := os.Getenv("OPEN_WEATHER_MAP_API_KEY")
 	response, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=kennesaw&appid=" + apiKey)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		log.Fatalf("Status code %d returned", response.StatusCode)
+		return nil, fmt.Errorf("status code %d returned", response.StatusCode)
 	}
 
 	data, _ := ioutil.ReadAll(response.Body)
