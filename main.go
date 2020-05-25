@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "github.com/joho/godotenv"
     "github.com/rivo/tview"
     "jeremiahtowe.com/go_dash/pkg/systemProperties/cpu"
     "jeremiahtowe.com/go_dash/pkg/weather"
@@ -10,6 +11,11 @@ import (
 )
 
 func main() {
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+
     // Initialize grid
     grid := tview.NewGrid().SetRows(3, 0, 3).SetColumns(60, 30, 30).SetBorders(true)
     app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
@@ -30,7 +36,7 @@ func main() {
     go populateWeatherDisplay(weatherTextView)
 
     // Run application
-    err := app.Run()
+    err = app.Run()
     if err != nil {
         log.Fatal(err)
     }
