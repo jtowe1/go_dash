@@ -20,7 +20,7 @@ func main() {
     grid := tview.NewGrid().SetRows(3, 0, 3).SetColumns(60, 30, 30).SetBorders(true)
     app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
 
-    cpuTextView := tview.NewTextView()
+    cpuTextView := tview.NewTextView().SetDynamicColors(true)
     cpuTextView.SetChangedFunc(func() {
         app.Draw()
     })
@@ -28,7 +28,7 @@ func main() {
     go populateCpuDisplay(cpuTextView)
 
     // Weather info to grid
-    weatherTextView := tview.NewTextView()
+    weatherTextView := tview.NewTextView().SetDynamicColors(true)
     weatherTextView.SetChangedFunc(func() {
         app.Draw()
     })
@@ -70,7 +70,7 @@ func populateWeatherDisplay(weatherTextView *tview.TextView) {
 
     go fmt.Fprintf(
         weatherTextView,
-        "Weather in: %s\nCurrent temp: %d °F\nFeels like: %d °F\n",
+        "Weather in: %s\nCurrent temp: [red]%d °F[white]\nFeels like: [red]%d °F[white]\n",
         weatherInfo.Name,
         int(weatherInfo.Main.Temp),
         int(weatherInfo.Main.FeelsLike))
