@@ -11,16 +11,16 @@ import (
 
 type Data struct {
 	Weather   []WeatherStationData  `json:"weather"`
-	Name      string   `json:"name"`
-	Main 	  Main     `json:"main"`
+	Name      string   				`json:"name"`
+	Main 	  Main   				`json:"main"`
 
 }
 
 type WeatherStationData struct {
 	Id 			int 	`json:"id"`
-	Main 		string `json:"main"`
-	Description string `json:"description"`
-	Icon 		string `json:"icon"`
+	Main 		string 	`json:"main"`
+	Description string 	`json:"description"`
+	Icon 		string 	`json:"icon"`
 }
 
 type Main struct {
