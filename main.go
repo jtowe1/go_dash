@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/joho/godotenv"
     "github.com/rivo/tview"
+    "jeremiahtowe.com/go_dash/pkg/github"
     "jeremiahtowe.com/go_dash/pkg/systemProperties/cpu"
     "jeremiahtowe.com/go_dash/pkg/weather"
     "log"
@@ -35,6 +36,13 @@ func main() {
     grid.AddItem(weatherTextView, 1, 1, 1, 1, 0, 100, false)
     go populateWeatherDisplay(weatherTextView)
 
+    githubTextView := tview.NewTextView().SetDynamicColors(true)
+    githubTextView.SetChangedFunc(func() {
+        app.Draw()
+    })
+    grid.AddItem(githubTextView, 0, 0, 1, 2, 0, 100, false)
+    go populateGithubDisplay(githubTextView)
+
     // Run application
     err = app.Run()
     if err != nil {
@@ -51,6 +59,28 @@ func populateCpuDisplay(cpuTextView *tview.TextView) {
 
     // Cpu info to grid
     go fmt.Fprintf(cpuTextView, "%s", cpuInfo.Brand)
+}
+
+func populateGithubDisplay(githubTextView *tview.TextView) {
+    githubInfo, gitHubError := github.GetPullRequests()
+    if gitHubError != nil {
+        file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer file.Close()
+        log.SetOutput(file)
+        log.Print(gitHubError)
+        fmt.Fprintf(githubTextView, "Error, check error.log")
+        return
+    }
+
+    textViewString := "Pull Requests authored by Jeremiah\n"
+    for _, element := range githubInfo.Items {
+        textViewString += element.Title + "\n"
+    }
+
+    fmt.Fprintf(githubTextView, "%s", textViewString)
 }
 
 func populateWeatherDisplay(weatherTextView *tview.TextView) {
