@@ -18,14 +18,14 @@ func main() {
     }
 
     // Initialize grid
-    grid := tview.NewGrid().SetRows(3, 0, 3).SetColumns(60, 30, 30).SetBorders(true)
+    grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0).SetBorders(true)
     app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
 
     cpuTextView := tview.NewTextView().SetDynamicColors(true)
     cpuTextView.SetChangedFunc(func() {
         app.Draw()
     })
-    grid.AddItem(cpuTextView, 1, 0, 1, 1, 0, 100, false)
+    grid.AddItem(cpuTextView, 0, 0, 1, 1, 0, 100, false)
     go populateCpuDisplay(cpuTextView)
 
     // Weather info to grid
@@ -33,15 +33,12 @@ func main() {
     weatherTextView.SetChangedFunc(func() {
         app.Draw()
     })
-    grid.AddItem(weatherTextView, 1, 1, 1, 1, 0, 100, false)
+    grid.AddItem(weatherTextView, 0, 1, 1, 1, 0, 100, false)
     go populateWeatherDisplay(weatherTextView)
 
-    githubTextView := tview.NewTextView().SetDynamicColors(true)
-    githubTextView.SetChangedFunc(func() {
-        app.Draw()
-    })
-    grid.AddItem(githubTextView, 0, 0, 1, 2, 0, 100, false)
-    go populateGithubDisplay(githubTextView)
+    githubTable := tview.NewTable().SetBorders(true)
+    grid.AddItem(githubTable, 1, 0, 1, 2, 0, 100, false)
+    //go populateGithubDisplay(githubTable, app)
 
     // Run application
     err = app.Run()
