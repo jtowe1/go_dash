@@ -9,6 +9,7 @@ import (
     "jeremiahtowe.com/go_dash/pkg/weather"
     "log"
     "os"
+    "strconv"
 )
 
 func main() {
@@ -74,10 +75,12 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
     }
 
     githubTable.SetCell(0, 0, tview.NewTableCell("Pull Requests authored by Jeremiah"))
+    githubTable.SetCell(0, 1, tview.NewTableCell("Comments"))
 
     rowCounter := 1
     for _, element := range githubInfo.Items {
         githubTable.SetCell(rowCounter, 0, tview.NewTableCell(element.Title))
+        githubTable.SetCell(rowCounter, 1, tview.NewTableCell(strconv.Itoa(element.NumberOfComments)).SetAlign(tview.AlignCenter))
         rowCounter++
     }
 
