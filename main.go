@@ -60,7 +60,7 @@ func populateCpuDisplay(cpuTextView *tview.TextView) {
 }
 
 func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
-    githubInfo, gitHubError := github.GetPullRequests()
+    pullRequests, gitHubError := github.GetPullRequests()
     if gitHubError != nil {
         file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
         if err != nil {
@@ -78,9 +78,9 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
     githubTable.SetCell(0, 1, tview.NewTableCell("Comments"))
 
     rowCounter := 1
-    for _, element := range githubInfo.Items {
-        githubTable.SetCell(rowCounter, 0, tview.NewTableCell(element.Title))
-        githubTable.SetCell(rowCounter, 1, tview.NewTableCell(strconv.Itoa(element.NumberOfComments)).SetAlign(tview.AlignCenter))
+    for _, pullRequest := range *pullRequests {
+        githubTable.SetCell(rowCounter, 0, tview.NewTableCell(pullRequest.Title))
+        githubTable.SetCell(rowCounter, 1, tview.NewTableCell(strconv.Itoa(pullRequest.NumberOfComments)).SetAlign(tview.AlignCenter))
         rowCounter++
     }
 
