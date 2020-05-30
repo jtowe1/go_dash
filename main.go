@@ -38,7 +38,7 @@ func main() {
 
     githubTable := tview.NewTable().SetBorders(true)
     grid.AddItem(githubTable, 1, 0, 1, 2, 0, 100, false)
-    //go populateGithubDisplay(githubTable, app)
+    go populateGithubDisplay(githubTable, app)
 
     // Run application
     err = app.Run()
@@ -58,7 +58,7 @@ func populateCpuDisplay(cpuTextView *tview.TextView) {
     go fmt.Fprintf(cpuTextView, "%s", cpuInfo.Brand)
 }
 
-func populateGithubDisplay(githubTextView *tview.TextView) {
+func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
     githubInfo, gitHubError := github.GetPullRequests()
     if gitHubError != nil {
         file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
@@ -68,16 +68,20 @@ func populateGithubDisplay(githubTextView *tview.TextView) {
         defer file.Close()
         log.SetOutput(file)
         log.Print(gitHubError)
-        fmt.Fprintf(githubTextView, "Error, check error.log")
+        githubTable.SetCell(0, 0, tview.NewTableCell("Error, check error.log"))
+        app.Draw()
         return
     }
 
-    textViewString := "Pull Requests authored by Jeremiah\n"
+    githubTable.SetCell(0, 0, tview.NewTableCell("Pull Requests authored by Jeremiah"))
+
+    rowCounter := 1
     for _, element := range githubInfo.Items {
-        textViewString += element.Title + "\n"
+        githubTable.SetCell(rowCounter, 0, tview.NewTableCell(element.Title))
+        rowCounter++
     }
 
-    fmt.Fprintf(githubTextView, "%s", textViewString)
+    app.Draw()
 }
 
 func populateWeatherDisplay(weatherTextView *tview.TextView) {
