@@ -23,12 +23,12 @@ type Issue struct {
 }
 
 type PullRequest struct {
-	Url 				string 	`json:"url"`
-	Number 				int 	`json:"number"`
-	Id 					int 	`json:"id"`
-	Title 				string 	`json:"title"`
-	State 				string 	`json:"state"`
-	NumberOfComments 	int 	`json:"comments"`
+	Url	string `json:"url"`
+	Number int `json:"number"`
+	Id int `json:"id"`
+	Title string `json:"title"`
+	State string `json:"state"`
+	NumberOfComments int `json:"comments"`
 }
 
 type client struct {

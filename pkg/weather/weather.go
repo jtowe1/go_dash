@@ -10,21 +10,21 @@ import (
 )
 
 type Data struct {
-	Weather   []WeatherStationData  `json:"weather"`
-	Name      string   				`json:"name"`
-	Main 	  Main   				`json:"main"`
+	Weather []WeatherStationData `json:"weather"`
+	Name string `json:"name"`
+	Main Main `json:"main"`
 
 }
 
 type WeatherStationData struct {
-	Id 			int 	`json:"id"`
-	Main 		string 	`json:"main"`
-	Description string 	`json:"description"`
-	Icon 		string 	`json:"icon"`
+	Id int `json:"id"`
+	Main string `json:"main"`
+	Description string `json:"description"`
+	Icon string `json:"icon"`
 }
 
 type Main struct {
-	Temp      float64 `json:"temp"`
+	Temp float64 `json:"temp"`
 	FeelsLike float64 `json:"feels_like"`
 }
 
