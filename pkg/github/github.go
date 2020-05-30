@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	issuesUrl string = "https://github.dev.shootproof.com/api/v3/search/issues"
+	author string = "jtowe"
+)
+
 type Issues struct {
 	Items []Issue `json:"items"`
 }
@@ -26,6 +31,18 @@ type PullRequest struct {
 	NumberOfComments 	int 	`json:"comments"`
 }
 
+type client struct {
+	client *http.Client
+}
+
+func newGithubClient() *client {
+	return &client {
+		client: &http.Client{
+			Timeout: time.Second * 3,
+		},
+	}
+}
+
 func GetPullRequests() (*[]PullRequest, error) {
 	issues, err := getIssues()
 	if err != nil {
@@ -37,9 +54,7 @@ func GetPullRequests() (*[]PullRequest, error) {
 
 	for _, issue := range issues.Items {
 		var pullRequest PullRequest
-		client := http.Client{
-			Timeout: time.Second * 3,
-		}
+		githubClient := newGithubClient()
 
 		accessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
 		request, err := http.NewRequest("GET", issue.PullRequest.Url, nil)
@@ -49,7 +64,7 @@ func GetPullRequests() (*[]PullRequest, error) {
 		}
 		request.SetBasicAuth("jtowe", accessToken)
 
-		response, err = client.Do(request)
+		response, err = githubClient.client.Do(request)
 		if err != nil {
 			return nil, err
 		}
@@ -71,19 +86,17 @@ func GetPullRequests() (*[]PullRequest, error) {
 }
 
 func getIssues() (*Issues, error){
-	client := http.Client{
-		Timeout: time.Second * 3,
-	}
+	githubClient := newGithubClient()
 
 	accessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
-	request, err := http.NewRequest("GET", "https://github.dev.shootproof.com/api/v3/search/issues?q=state:open+type:pr+author:jtowe", nil)
+	request, err := http.NewRequest("GET", issuesUrl + "?q=state:open+type:pr+author:" + author, nil)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
 	request.SetBasicAuth("jtowe", accessToken)
 
-	response, err := client.Do(request)
+	response, err := githubClient.client.Do(request)
 	if err != nil {
 		return nil, err
 	}
