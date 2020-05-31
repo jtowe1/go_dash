@@ -3,7 +3,6 @@ package github
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -46,7 +45,7 @@ func newGithubClient() *client {
 func GetPullRequests() (*[]PullRequest, error) {
 	issues, err := getIssues()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var pullRequests []PullRequest
@@ -59,7 +58,6 @@ func GetPullRequests() (*[]PullRequest, error) {
 		accessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
 		request, err := http.NewRequest("GET", issue.PullRequest.Url, nil)
 		if err != nil {
-			log.Fatal(err)
 			return nil, err
 		}
 		request.SetBasicAuth("jtowe", accessToken)
@@ -73,7 +71,6 @@ func GetPullRequests() (*[]PullRequest, error) {
 
 		err = json.Unmarshal(data, &pullRequest)
 		if err != nil {
-			log.Fatal(err)
 			return nil, err
 		}
 
@@ -91,7 +88,6 @@ func getIssues() (*Issues, error){
 	accessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
 	request, err := http.NewRequest("GET", issuesUrl + "?q=state:open+type:pr+author:" + author, nil)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 	request.SetBasicAuth("jtowe", accessToken)
@@ -109,7 +105,6 @@ func getIssues() (*Issues, error){
 
 	err = json.Unmarshal(data, &issues)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 
