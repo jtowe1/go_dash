@@ -74,13 +74,20 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
         return
     }
 
-    githubTable.SetCell(0, 0, tview.NewTableCell("Pull Requests authored by Jeremiah"))
+    githubTable.SetCell(0, 0, tview.NewTableCell("Open Pull Requests authored by Jeremiah"))
     githubTable.SetCell(0, 1, tview.NewTableCell("Comments"))
+    githubTable.SetCell(0, 2, tview.NewTableCell("Labels"))
 
     rowCounter := 1
     for _, pullRequest := range *pullRequests {
         githubTable.SetCell(rowCounter, 0, tview.NewTableCell(pullRequest.Title))
         githubTable.SetCell(rowCounter, 1, tview.NewTableCell(strconv.Itoa(pullRequest.NumberOfComments)).SetAlign(tview.AlignCenter))
+
+        labels := ""
+        for _, label := range pullRequest.Labels {
+            labels += label.Name + " "
+        }
+        githubTable.SetCell(rowCounter, 2, tview.NewTableCell(labels))
         rowCounter++
     }
 

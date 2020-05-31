@@ -28,6 +28,12 @@ type PullRequest struct {
 	Title string `json:"title"`
 	State string `json:"state"`
 	NumberOfComments int `json:"comments"`
+	Labels []Label `json:"labels"`
+}
+
+type Label struct {
+	Name string `json:"name"`
+	Color string `json:"color"`
 }
 
 type client struct {
