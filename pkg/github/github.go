@@ -29,6 +29,8 @@ type PullRequest struct {
 	State string `json:"state"`
 	NumberOfComments int `json:"comments"`
 	Labels []Label `json:"labels"`
+	Additions int `json:"additions"`
+	Deletions int `json:"deletions"`
 }
 
 type Label struct {

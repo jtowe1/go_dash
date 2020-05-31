@@ -74,9 +74,11 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
         return
     }
 
-    githubTable.SetCell(0, 0, tview.NewTableCell("Open Pull Requests authored by Jeremiah"))
-    githubTable.SetCell(0, 1, tview.NewTableCell("Comments"))
-    githubTable.SetCell(0, 2, tview.NewTableCell("Labels"))
+    githubTable.SetCell(0, 0, tview.NewTableCell("[aquamarine]Open Pull Requests authored by Jeremiah[white]"))
+    githubTable.SetCell(0, 1, tview.NewTableCell("[aquamarine]Comments[white]"))
+    githubTable.SetCell(0, 2, tview.NewTableCell("[aquamarine]Labels[white]"))
+    githubTable.SetCell(0, 3, tview.NewTableCell("[aquamarine]Additions[white]"))
+    githubTable.SetCell(0, 4, tview.NewTableCell("[aquamarine]Deletions[white]"))
 
     rowCounter := 1
     for _, pullRequest := range *pullRequests {
@@ -85,9 +87,11 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
 
         labels := ""
         for _, label := range pullRequest.Labels {
-            labels += label.Name + " "
+            labels += "[#" + label.Color +"]" + label.Name + " "
         }
         githubTable.SetCell(rowCounter, 2, tview.NewTableCell(labels))
+        githubTable.SetCell(rowCounter, 3, tview.NewTableCell("[green]" + strconv.Itoa(pullRequest.Additions) + "[white]"))
+        githubTable.SetCell(rowCounter, 4, tview.NewTableCell("[red]" + strconv.Itoa(pullRequest.Deletions) + "[white]"))
         rowCounter++
     }
 
