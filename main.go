@@ -19,10 +19,11 @@ func main() {
     }
 
     // Initialize grid
-    grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0).SetBorders(true)
+    grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0).SetBorders(false)
     app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
 
     cpuTextView := tview.NewTextView().SetDynamicColors(true)
+    cpuTextView.SetBorder(true).SetTitle("🖥️  Computer Info")
     cpuTextView.SetChangedFunc(func() {
         app.Draw()
     })
@@ -31,15 +32,18 @@ func main() {
 
     // Weather info to grid
     weatherTextView := tview.NewTextView().SetDynamicColors(true)
+    weatherTextView.SetBorder(true).SetTitle("☁️  Weather")
     weatherTextView.SetChangedFunc(func() {
         app.Draw()
     })
     grid.AddItem(weatherTextView, 0, 1, 1, 1, 0, 100, false)
     go populateWeatherDisplay(weatherTextView)
 
-    githubTable := tview.NewTable().SetBorders(false)
+    githubTable := tview.NewTable()
+    githubTable.SetBorders(true)
+    githubTable.SetSeparator(tview.BoxDrawingsLightVertical)
     grid.AddItem(githubTable, 1, 0, 1, 2, 0, 100, false)
-    go populateGithubDisplay(githubTable, app)
+        go populateGithubDisplay(githubTable, app)
 
     // Run application
     err = app.Run()
@@ -56,7 +60,7 @@ func populateCpuDisplay(cpuTextView *tview.TextView) {
     }
 
     // Cpu info to grid
-    go fmt.Fprintf(cpuTextView, "%s", cpuInfo.Brand)
+    fmt.Fprintf(cpuTextView, "%s", cpuInfo.Brand)
 }
 
 func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
@@ -74,7 +78,7 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
         return
     }
 
-    githubTable.SetCell(0, 0, tview.NewTableCell("[aquamarine]Open Pull Requests authored by Jeremiah[white]"))
+    githubTable.SetCell(0, 0, tview.NewTableCell("️[aquamarine]Open Pull Requests authored by Jeremiah[white]"))
     githubTable.SetCell(0, 1, tview.NewTableCell("[aquamarine]Comments[white]"))
     githubTable.SetCell(0, 2, tview.NewTableCell("[aquamarine]Labels[white]"))
     githubTable.SetCell(0, 3, tview.NewTableCell("[aquamarine]Additions[white]"))
