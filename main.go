@@ -37,7 +37,7 @@ func main() {
     grid.AddItem(weatherTextView, 0, 1, 1, 1, 0, 100, false)
     go populateWeatherDisplay(weatherTextView)
 
-    githubTable := tview.NewTable().SetBorders(true)
+    githubTable := tview.NewTable().SetBorders(false)
     grid.AddItem(githubTable, 1, 0, 1, 2, 0, 100, false)
     go populateGithubDisplay(githubTable, app)
 
@@ -90,8 +90,8 @@ func populateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
             labels += "[#" + label.Color +"]" + label.Name + " "
         }
         githubTable.SetCell(rowCounter, 2, tview.NewTableCell(labels))
-        githubTable.SetCell(rowCounter, 3, tview.NewTableCell("[green]" + strconv.Itoa(pullRequest.Additions) + "[white]"))
-        githubTable.SetCell(rowCounter, 4, tview.NewTableCell("[red]" + strconv.Itoa(pullRequest.Deletions) + "[white]"))
+        githubTable.SetCell(rowCounter, 3, tview.NewTableCell("[green]" + strconv.Itoa(pullRequest.Additions) + "[white]").SetAlign(tview.AlignCenter))
+        githubTable.SetCell(rowCounter, 4, tview.NewTableCell("[red]" + strconv.Itoa(pullRequest.Deletions) + "[white]").SetAlign(tview.AlignCenter))
         rowCounter++
     }
 
