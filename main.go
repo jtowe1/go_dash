@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/joho/godotenv"
     "github.com/rivo/tview"
+    "jeremiahtowe.com/go_dash/pkg/calendar"
     "jeremiahtowe.com/go_dash/pkg/github"
     "jeremiahtowe.com/go_dash/pkg/systemProperties/cpu"
     "jeremiahtowe.com/go_dash/pkg/weather"
@@ -43,13 +44,46 @@ func main() {
     githubTable.SetBorders(true)
     githubTable.SetSeparator(tview.BoxDrawingsLightVertical)
     grid.AddItem(githubTable, 1, 1, 1, 2, 0, 100, false)
-        go populateGithubDisplay(githubTable, app)
+    go populateGithubDisplay(githubTable, app)
+
+    calendarTextView := tview.NewTextView()
+    calendarTextView.SetBorder(true).SetTitle("📅  Calendar")
+    calendarTextView.SetChangedFunc(func() {
+        app.Draw()
+    })
+    grid.AddItem(calendarTextView, 0, 0, 2, 1, 0, 100, false)
+    go populateCalendarDisplay(calendarTextView)
+
 
     // Run application
     err = app.Run()
     if err != nil {
         log.Fatal(err)
     }
+}
+
+func populateCalendarDisplay(calenderTextView *tview.TextView) {
+    events, err := calendar.GetCalendar()
+    if err != nil {
+        file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer file.Close()
+        log.SetOutput(file)
+        log.Print(err)
+        fmt.Fprintf(calenderTextView, "%s","Error, check error.log")
+        return
+    }
+
+    for _, item := range events.Items {
+        date := item.Start.DateTime
+        if date == "" {
+            date = item.Start.Date
+        }
+        fmt.Fprintf(calenderTextView, "%v (%v)\n", item.Summary, date)
+    }
+
 }
 
 func populateCpuDisplay(cpuTextView *tview.TextView) {
