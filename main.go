@@ -20,8 +20,9 @@ func main() {
     }
 
     // Initialize grid
-    grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0, 0).SetBorders(false)
-    app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
+    grid := initializeGrid()
+    app := initializeApp(grid)
+
 
     cpuTextView := tview.NewTextView().SetDynamicColors(true)
     cpuTextView.SetBorder(true).SetTitle("🖥️  Computer Info")
@@ -42,7 +43,6 @@ func main() {
 
     githubTable := tview.NewTable()
     githubTable.SetBorders(true)
-    githubTable.SetSeparator(tview.BoxDrawingsLightVertical)
     grid.AddItem(githubTable, 1, 1, 1, 2, 0, 100, false)
     go populateGithubDisplay(githubTable, app)
 
@@ -61,6 +61,17 @@ func main() {
         log.Fatal(err)
     }
 }
+
+func initializeApp(grid *tview.Grid) *tview.Application {
+    app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
+    return app
+}
+
+func initializeGrid() *tview.Grid{
+    grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0, 0).SetBorders(false)
+    return grid
+}
+
 
 func populateCalendarDisplay(calenderTextView *tview.TextView) {
     events, err := calendar.GetCalendar()
