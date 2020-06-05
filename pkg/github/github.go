@@ -2,7 +2,9 @@ package github
 
 import (
 	"encoding/json"
+	"github.com/rivo/tview"
 	"io/ioutil"
+	"jeremiahtowe.com/go_dash/goDash"
 	"net/http"
 	"os"
 	"time"
@@ -12,6 +14,17 @@ const (
 	issuesUrl string = "https://github.dev.shootproof.com/api/v3/search/issues"
 	author string = "jtowe"
 )
+
+type Widget struct {
+	goDash.TableWidget
+	Row int
+	Col int
+	RowSpan int
+	ColSpan int
+	MinGridHeight int
+	MinGridWidth int
+	View *tview.Table
+}
 
 type Issues struct {
 	Items []Issue `json:"items"`
@@ -40,6 +53,23 @@ type Label struct {
 
 type client struct {
 	client *http.Client
+}
+
+func GetWidget() *Widget {
+	githubTable := tview.NewTable()
+	githubTable.SetBorders(true)
+
+	widget := Widget{
+		View: githubTable,
+		Row: 1,
+		Col: 1,
+		RowSpan: 1,
+		ColSpan: 2,
+		MinGridHeight: 0,
+		MinGridWidth: 100,
+	}
+
+	return &widget
 }
 
 func newGithubClient() *client {

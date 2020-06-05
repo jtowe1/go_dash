@@ -3,29 +3,62 @@ package weather
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/rivo/tview"
 	"io/ioutil"
+	"jeremiahtowe.com/go_dash/goDash"
 	"log"
 	"net/http"
 	"os"
 )
 
+type Widget struct {
+	goDash.TextViewWidget
+	Row int
+	Col int
+	RowSpan int
+	ColSpan int
+	MinGridHeight int
+	MinGridWidth int
+	View *tview.TextView
+}
+
 type Data struct {
-	Weather []WeatherStationData `json:"weather"`
+	Weather []weatherStationData `json:"weather"`
 	Name string `json:"name"`
-	Main Main `json:"main"`
+	Main main `json:"main"`
 
 }
 
-type WeatherStationData struct {
+type weatherStationData struct {
 	Id int `json:"id"`
 	Main string `json:"main"`
 	Description string `json:"description"`
 	Icon string `json:"icon"`
 }
 
-type Main struct {
+type main struct {
 	Temp float64 `json:"temp"`
 	FeelsLike float64 `json:"feels_like"`
+}
+
+func GetWidget(app *tview.Application) *Widget {
+	weatherTextView := tview.NewTextView().SetDynamicColors(true)
+	weatherTextView.SetBorder(true).SetTitle("☁️  Weather")
+	weatherTextView.SetChangedFunc(func() {
+		app.Draw()
+	})
+
+	widget := Widget{
+		View: weatherTextView,
+		Row: 0,
+		Col: 2,
+		RowSpan: 1,
+		ColSpan: 1,
+		MinGridHeight: 0,
+		MinGridWidth: 100,
+	}
+
+	return &widget
 }
 
 func GetWeather() (*Data, error){

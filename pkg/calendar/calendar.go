@@ -4,18 +4,52 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/rivo/tview"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
 	"io/ioutil"
+	"jeremiahtowe.com/go_dash/goDash"
 	"log"
 	"net/http"
 	"os"
 	"time"
 )
 
+type Widget struct {
+	goDash.TextViewWidget
+	Row int
+	Col int
+	RowSpan int
+	ColSpan int
+	MinGridHeight int
+	MinGridWidth int
+	View *tview.TextView
+}
+
 type client struct {
 	client *http.Client
+}
+
+func GetWidget(app *tview.Application) *Widget {
+	calendarTextView := tview.NewTextView()
+	calendarTextView.SetBorder(true).SetTitle("📅  Calendar")
+	calendarTextView.SetChangedFunc(func() {
+		app.Draw()
+	})
+
+	widget := Widget{
+		View: calendarTextView,
+		Row: 0,
+		Col: 0,
+		RowSpan: 2,
+		ColSpan: 1,
+		MinGridHeight: 0,
+		MinGridWidth: 100,
+	}
+
+	return &widget
+
 }
 
 func newGoogleCalendarClient() *client {
