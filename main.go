@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/joho/godotenv"
     "github.com/rivo/tview"
+    "jeremiahtowe.com/go_dash/goDash"
     "jeremiahtowe.com/go_dash/pkg/calendar"
     "jeremiahtowe.com/go_dash/pkg/github"
     "jeremiahtowe.com/go_dash/pkg/systemProperties/cpu"
@@ -19,40 +20,62 @@ func main() {
         log.Fatal("Error loading .env file")
     }
 
+    var widgets []goDash.WidgetInterface
+
     // Initialize grid
     grid := initializeGrid()
     app := initializeApp(grid)
 
+    cpuWidget := cpu.GetWidget(app)
+    widgets = append(widgets, cpuWidget)
+    grid.AddItem(
+        cpuWidget.View,
+        cpuWidget.Row,
+        cpuWidget.Col,
+        cpuWidget.RowSpan,
+        cpuWidget.ColSpan,
+        cpuWidget.MinGridHeight,
+        cpuWidget.MinGridWidth,
+        false)
+    go populateCpuDisplay(cpuWidget.View)
 
-    cpuTextView := tview.NewTextView().SetDynamicColors(true)
-    cpuTextView.SetBorder(true).SetTitle("🖥️  Computer Info")
-    cpuTextView.SetChangedFunc(func() {
-        app.Draw()
-    })
-    grid.AddItem(cpuTextView, 0, 1, 1, 1, 0, 100, false)
-    go populateCpuDisplay(cpuTextView)
+    weatherWidget := weather.GetWidget(app)
+    widgets = append(widgets, weatherWidget)
+    grid.AddItem(
+        weatherWidget.View,
+        weatherWidget.Row,
+        weatherWidget.Col,
+        weatherWidget.RowSpan,
+        weatherWidget.ColSpan,
+        weatherWidget.MinGridHeight,
+        weatherWidget.MinGridWidth,
+        false)
+    go populateWeatherDisplay(weatherWidget.View)
 
-    // Weather info to grid
-    weatherTextView := tview.NewTextView().SetDynamicColors(true)
-    weatherTextView.SetBorder(true).SetTitle("☁️  Weather")
-    weatherTextView.SetChangedFunc(func() {
-        app.Draw()
-    })
-    grid.AddItem(weatherTextView, 0, 2, 1, 1, 0, 100, false)
-    go populateWeatherDisplay(weatherTextView)
+    githubWidget := github.GetWidget()
+    widgets = append(widgets, githubWidget)
+    grid.AddItem(
+        githubWidget.View,
+        githubWidget.Row,
+        githubWidget.Col,
+        githubWidget.RowSpan,
+        githubWidget.ColSpan,
+        githubWidget.MinGridHeight,
+        githubWidget.MinGridWidth,
+        false)
+    go populateGithubDisplay(githubWidget.View, app)
 
-    githubTable := tview.NewTable()
-    githubTable.SetBorders(true)
-    grid.AddItem(githubTable, 1, 1, 1, 2, 0, 100, false)
-    go populateGithubDisplay(githubTable, app)
-
-    calendarTextView := tview.NewTextView()
-    calendarTextView.SetBorder(true).SetTitle("📅  Calendar")
-    calendarTextView.SetChangedFunc(func() {
-        app.Draw()
-    })
-    grid.AddItem(calendarTextView, 0, 0, 2, 1, 0, 100, false)
-    go populateCalendarDisplay(calendarTextView)
+    calendarWidget := calendar.GetWidget(app)
+    grid.AddItem(
+        calendarWidget.View,
+        calendarWidget.Row,
+        calendarWidget.Col,
+        calendarWidget.RowSpan,
+        calendarWidget.ColSpan,
+        calendarWidget.MinGridHeight,
+        calendarWidget.MinGridWidth,
+        false)
+    go populateCalendarDisplay(calendarWidget.View)
 
 
     // Run application
