@@ -12,6 +12,7 @@ import (
     "log"
     "os"
     "strconv"
+    "strings"
     "time"
 )
 
@@ -111,11 +112,24 @@ func populateCalendarDisplay(calenderTextView *tview.TextView) {
         return
     }
 
-    for _, item := range events.Items {
-        date, _ := time.Parse(time.RFC3339, item.Start.DateTime)
-        fmt.Fprintf(calenderTextView, "%v (%v)\n", item.Summary, date.Format(time.ANSIC))
-    }
+    statusIcons := [2]string{"✖️", "✅️"}
 
+    for _, event := range events.Items {
+       date, _ := time.Parse(time.RFC3339, event.Start.DateTime)
+       statusIcon := statusIcons[0]
+       for _, attendee := range event.Attendees {
+           if strings.ToLower(attendee.Email) == strings.ToLower(events.Summary) {
+                if strings.ToLower(attendee.ResponseStatus) == "accepted" {
+                    statusIcon = statusIcons[1]
+                }
+           }
+       }
+
+       fmt.Fprintf(
+           calenderTextView,
+           "%s ️%v \n\t(%v)\n",
+           statusIcon, event.Summary, date.Format(time.ANSIC))
+    }
 }
 
 func populateCpuDisplay(cpuTextView *tview.TextView) {
