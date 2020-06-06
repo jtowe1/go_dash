@@ -12,6 +12,7 @@ import (
     "log"
     "os"
     "strconv"
+    "time"
 )
 
 func main() {
@@ -111,11 +112,8 @@ func populateCalendarDisplay(calenderTextView *tview.TextView) {
     }
 
     for _, item := range events.Items {
-        date := item.Start.DateTime
-        if date == "" {
-            date = item.Start.Date
-        }
-        fmt.Fprintf(calenderTextView, "%v (%v)\n", item.Summary, date)
+        date, _ := time.Parse(time.RFC3339, item.Start.DateTime)
+        fmt.Fprintf(calenderTextView, "%v (%v)\n", item.Summary, date.Format(time.ANSIC))
     }
 
 }

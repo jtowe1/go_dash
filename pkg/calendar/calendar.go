@@ -49,15 +49,6 @@ func GetWidget(app *tview.Application) *Widget {
 	}
 
 	return &widget
-
-}
-
-func newGoogleCalendarClient() *client {
-	return &client {
-		client: &http.Client{
-			Timeout: time.Second * 3,
-		},
-	}
 }
 
 func getClient(config *oauth2.Config) *http.Client {
@@ -120,6 +111,7 @@ func GetCalendar() (*calendar.Events, error) {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
 	client := getClient(config)
+	client.Timeout = time.Second * 3
 
 	srv, err := calendar.New(client)
 	if err != nil {
