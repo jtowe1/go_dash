@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/rivo/tview"
 	"io/ioutil"
-	"jeremiahtowe.com/go_dash/goDash"
 	"net/http"
 	"os"
 	"time"
@@ -16,7 +15,7 @@ const (
 )
 
 type Widget struct {
-	goDash.TableWidget
+	//goDash.TableWidget
 	Row int
 	Col int
 	RowSpan int
@@ -24,6 +23,39 @@ type Widget struct {
 	MinGridHeight int
 	MinGridWidth int
 	View *tview.Table
+	Module string
+}
+
+func (w *Widget) GetView() interface{} {
+	return w.View
+}
+
+func (w *Widget) GetRow() int {
+	return w.Row
+}
+
+func (w *Widget) GetCol() int {
+	return w.Col
+}
+
+func (w *Widget) GetRowSpan() int {
+	return w.RowSpan
+}
+
+func (w *Widget) GetColSpan() int {
+	return w.ColSpan
+}
+
+func (w *Widget) GetMinGridHeight() int {
+	return w.MinGridHeight
+}
+
+func (w *Widget) GetMinGridWidth() int {
+	return w.MinGridWidth
+}
+
+func (w *Widget) GetModule() string {
+	return w.Module
 }
 
 type Issues struct {
@@ -67,6 +99,7 @@ func GetWidget() *Widget {
 		ColSpan: 2,
 		MinGridHeight: 0,
 		MinGridWidth: 100,
+		Module: "github",
 	}
 
 	return &widget

@@ -9,7 +9,6 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
 	"io/ioutil"
-	"jeremiahtowe.com/go_dash/goDash"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +16,6 @@ import (
 )
 
 type Widget struct {
-	goDash.TextViewWidget
 	Row int
 	Col int
 	RowSpan int
@@ -25,6 +23,39 @@ type Widget struct {
 	MinGridHeight int
 	MinGridWidth int
 	View *tview.TextView
+	Module string
+}
+
+func (w *Widget) GetView() interface{} {
+	return w.View
+}
+
+func (w *Widget) GetRow() int {
+	return w.Row
+}
+
+func (w *Widget) GetCol() int {
+	return w.Col
+}
+
+func (w *Widget) GetRowSpan() int {
+	return w.RowSpan
+}
+
+func (w *Widget) GetColSpan() int {
+	return w.ColSpan
+}
+
+func (w *Widget) GetMinGridHeight() int {
+	return w.MinGridHeight
+}
+
+func (w *Widget) GetMinGridWidth() int {
+	return w.MinGridWidth
+}
+
+func (w *Widget) GetModule() string {
+	return w.Module
 }
 
 type client struct {
@@ -46,6 +77,7 @@ func GetWidget(app *tview.Application) *Widget {
 		ColSpan: 1,
 		MinGridHeight: 0,
 		MinGridWidth: 100,
+		Module: "calendar",
 	}
 
 	return &widget

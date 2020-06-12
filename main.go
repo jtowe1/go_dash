@@ -22,69 +22,81 @@ func main() {
         log.Fatal("Error loading .env file")
     }
 
-    var widgets []goDash.WidgetInterface
 
     // Initialize grid
     grid := initializeGrid()
     app := initializeApp(grid)
 
-    cpuWidget := cpu.GetWidget(app)
-    widgets = append(widgets, cpuWidget)
-    grid.AddItem(
-        cpuWidget.View,
-        cpuWidget.Row,
-        cpuWidget.Col,
-        cpuWidget.RowSpan,
-        cpuWidget.ColSpan,
-        cpuWidget.MinGridHeight,
-        cpuWidget.MinGridWidth,
-        false)
-    go populateCpuDisplay(cpuWidget.View)
+    var widgets []goDash.WidgetInterface
 
-    weatherWidget := weather.GetWidget(app)
-    widgets = append(widgets, weatherWidget)
-    grid.AddItem(
-        weatherWidget.View,
-        weatherWidget.Row,
-        weatherWidget.Col,
-        weatherWidget.RowSpan,
-        weatherWidget.ColSpan,
-        weatherWidget.MinGridHeight,
-        weatherWidget.MinGridWidth,
-        false)
-    go populateWeatherDisplay(weatherWidget.View)
+    getWidgets(&widgets, app)
 
-    githubWidget := github.GetWidget()
-    widgets = append(widgets, githubWidget)
-    grid.AddItem(
-        githubWidget.View,
-        githubWidget.Row,
-        githubWidget.Col,
-        githubWidget.RowSpan,
-        githubWidget.ColSpan,
-        githubWidget.MinGridHeight,
-        githubWidget.MinGridWidth,
-        false)
-    go populateGithubDisplay(githubWidget.View, app)
+    for _, value := range widgets {
+        viewInterface := value.GetView()
+        if val, ok := viewInterface.(*tview.TextView); ok {
+            grid.AddItem(
+                val,
+                value.GetRow(),
+                value.GetCol(),
+                value.GetRowSpan(),
+                value.GetColSpan(),
+                value.GetMinGridHeight(),
+                value.GetMinGridWidth(),
+                false)
+        }
+        if val, ok := viewInterface.(*tview.Table); ok {
+            grid.AddItem(
+                val,
+                value.GetRow(),
+                value.GetCol(),
+                value.GetRowSpan(),
+                value.GetColSpan(),
+                value.GetMinGridHeight(),
+                value.GetMinGridWidth(),
+                false)
+        }
+        if value.GetModule() == "calendar" {
+            var view = value.GetView().(*tview.TextView)
+            go populateCalendarDisplay(view)
+        }
+        if value.GetModule() == "github" {
+            var view = value.GetView().(*tview.Table)
+            go populateGithubDisplay(view, app)
+        }
+        if value.GetModule() == "cpu" {
+            var view = value.GetView().(*tview.TextView)
+            go populateCpuDisplay(view)
+        }
+        if value.GetModule() == "weather" {
+            var view = value.GetView().(*tview.TextView)
+            go populateWeatherDisplay(view)
+        }
 
-    calendarWidget := calendar.GetWidget(app)
-    grid.AddItem(
-        calendarWidget.View,
-        calendarWidget.Row,
-        calendarWidget.Col,
-        calendarWidget.RowSpan,
-        calendarWidget.ColSpan,
-        calendarWidget.MinGridHeight,
-        calendarWidget.MinGridWidth,
-        false)
-    go populateCalendarDisplay(calendarWidget.View)
-
+    }
 
     // Run application
     err = app.Run()
     if err != nil {
         log.Fatal(err)
     }
+}
+
+func getWidgets(widgets *[]goDash.WidgetInterface, app *tview.Application) {
+
+    cpuWidget := cpu.GetWidget(app)
+    *widgets = append(*widgets, cpuWidget)
+
+
+    weatherWidget := weather.GetWidget(app)
+    *widgets = append(*widgets, weatherWidget)
+
+
+    githubWidget := github.GetWidget()
+    *widgets = append(*widgets, githubWidget)
+
+
+    calendarWidget := calendar.GetWidget(app)
+    *widgets = append(*widgets, calendarWidget)
 }
 
 func initializeApp(grid *tview.Grid) *tview.Application {

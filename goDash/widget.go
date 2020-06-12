@@ -1,12 +1,12 @@
 package goDash
 
 type WidgetInterface interface {
-}
-
-type TextViewWidget interface {
-	WidgetInterface
-}
-
-type TableWidget interface {
-	WidgetInterface
+	GetView() interface{}
+	GetRow() int
+	GetCol() int
+	GetRowSpan() int
+	GetColSpan() int
+	GetMinGridHeight() int
+	GetMinGridWidth() int
+	GetModule() string
 }
