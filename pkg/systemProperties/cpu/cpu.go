@@ -87,7 +87,7 @@ func GetInfo() (*Info, error) {
 	return &info, nil
 }
 
-func PopulateCpuDisplay(cpuTextView *tview.TextView) {
+func PopulateDisplay(cpuTextView *tview.TextView) {
 	// Cpu info
 	cpuInfo, err := GetInfo()
 	if err != nil {

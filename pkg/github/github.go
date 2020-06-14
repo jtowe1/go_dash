@@ -184,7 +184,7 @@ func getIssues() (*Issues, error){
 	return &issues, nil
 }
 
-func PopulateGithubDisplay(githubTable *tview.Table, app *tview.Application) {
+func PopulateDisplay(githubTable *tview.Table, app *tview.Application) {
 	pullRequests, gitHubError := GetPullRequests()
 	if gitHubError != nil {
 		file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)

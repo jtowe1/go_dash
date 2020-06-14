@@ -52,19 +52,19 @@ func main() {
         }
         if value.GetModule() == "calendar" {
             var view = value.GetView().(*tview.TextView)
-            go calendar.PopulateCalendarDisplay(view)
+            go calendar.PopulateDisplay(view)
         }
         if value.GetModule() == "github" {
             var view = value.GetView().(*tview.Table)
-            go github.PopulateGithubDisplay(view, app)
+            go github.PopulateDisplay(view, app)
         }
         if value.GetModule() == "cpu" {
             var view = value.GetView().(*tview.TextView)
-            go cpu.PopulateCpuDisplay(view)
+            go cpu.PopulateDisplay(view)
         }
         if value.GetModule() == "weather" {
             var view = value.GetView().(*tview.TextView)
-            go weather.PopulateWeatherDisplay(view)
+            go weather.PopulateDisplay(view)
         }
 
     }

@@ -166,7 +166,7 @@ func GetCalendar() (*calendar.Events, error) {
 	return nil, err
 }
 
-func PopulateCalendarDisplay(calenderTextView *tview.TextView) {
+func PopulateDisplay(calenderTextView *tview.TextView) {
 	events, err := GetCalendar()
 	if err != nil {
 		file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)

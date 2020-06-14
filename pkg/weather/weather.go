@@ -126,7 +126,7 @@ func kelvinToFahrenheit(tempInKelvin *float64) {
 	*tempInKelvin = (((*tempInKelvin - 273.15) * 9) / 5) + 32
 }
 
-func PopulateWeatherDisplay(weatherTextView *tview.TextView) {
+func PopulateDisplay(weatherTextView *tview.TextView) {
 	// Weather info
 	weatherInfo, getWeatherError := GetWeather()
 	if getWeatherError != nil {
