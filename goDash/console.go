@@ -9,52 +9,62 @@ import (
 	"log"
 )
 
+type goDash struct {
+	widgets *[]WidgetInterface
+	app *tview.Application
+	grid *tview.Grid
+}
+
 func Run() {
+	goDash := setup()
+
 	// Initialize grid
-	grid := initializeGrid()
-	app := initializeApp(grid)
+	goDash.initializeGrid()
+	goDash.initializeApp()
 
-	var widgets []WidgetInterface
-
-	getWidgets(&widgets, app)
-	populateGrid(&widgets, grid, app)
+	goDash.getWidgets()
+	goDash.populateGrid()
 
 	// Run application
-	err := app.Run()
+	err := goDash.app.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func getWidgets(widgets *[]WidgetInterface, app *tview.Application) {
-	cpuWidget := cpu.GetWidget(app)
-	*widgets = append(*widgets, cpuWidget)
+func setup() *goDash {
+	var goDash goDash
+	goDash.widgets = new([]WidgetInterface)
+	return &goDash
+}
 
-	weatherWidget := weather.GetWidget(app)
-	*widgets = append(*widgets, weatherWidget)
+func (gd *goDash) getWidgets() {
+	cpuWidget := cpu.GetWidget(gd.app)
+	*gd.widgets = append(*gd.widgets, cpuWidget)
+
+	weatherWidget := weather.GetWidget(gd.app)
+	*gd.widgets = append(*gd.widgets, weatherWidget)
 
 	githubWidget := github.GetWidget()
-	*widgets = append(*widgets, githubWidget)
+	*gd.widgets = append(*gd.widgets, githubWidget)
 
-	calendarWidget := calendar.GetWidget(app)
-	*widgets = append(*widgets, calendarWidget)
+	calendarWidget := calendar.GetWidget(gd.app)
+	*gd.widgets = append(*gd.widgets, calendarWidget)
 }
 
-func initializeApp(grid *tview.Grid) *tview.Application {
-	app := tview.NewApplication().SetRoot(grid, true).SetFocus(grid)
-	return app
+func (gd *goDash) initializeApp() {
+	gd.app = tview.NewApplication().SetRoot(gd.grid, true).SetFocus(gd.grid)
 }
 
-func initializeGrid() *tview.Grid{
-	grid := tview.NewGrid().SetRows(0, 0).SetColumns(0, 0, 0).SetBorders(false)
-	return grid
+func (gd *goDash) initializeGrid() {
+	gd.grid = tview.NewGrid().SetRows(0, 0).SetColumns(0, 0, 0).SetBorders(false)
 }
 
-func populateGrid(widgets *[]WidgetInterface, grid *tview.Grid, app *tview.Application) {
-	for _, value := range *widgets {
+func (gd *goDash) populateGrid() {
+	for _, value := range *gd.widgets {
 		viewInterface := value.GetView()
 		if val, ok := viewInterface.(*tview.TextView); ok {
-			grid.AddItem(
+			gd.grid.AddItem(
 				val,
 				value.GetRow(),
 				value.GetCol(),
@@ -65,7 +75,7 @@ func populateGrid(widgets *[]WidgetInterface, grid *tview.Grid, app *tview.Appli
 				false)
 		}
 		if val, ok := viewInterface.(*tview.Table); ok {
-			grid.AddItem(
+			gd.grid.AddItem(
 				val,
 				value.GetRow(),
 				value.GetCol(),
@@ -81,7 +91,7 @@ func populateGrid(widgets *[]WidgetInterface, grid *tview.Grid, app *tview.Appli
 		}
 		if value.GetModule() == "github" {
 			var view = value.GetView().(*tview.Table)
-			go github.PopulateDisplay(view, app)
+			go github.PopulateDisplay(view, gd.app)
 		}
 		if value.GetModule() == "cpu" {
 			var view = value.GetView().(*tview.TextView)
