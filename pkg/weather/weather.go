@@ -126,3 +126,26 @@ func kelvinToFahrenheit(tempInKelvin *float64) {
 	*tempInKelvin = (((*tempInKelvin - 273.15) * 9) / 5) + 32
 }
 
+func PopulateWeatherDisplay(weatherTextView *tview.TextView) {
+	// Weather info
+	weatherInfo, getWeatherError := GetWeather()
+	if getWeatherError != nil {
+		file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		log.SetOutput(file)
+		log.Print(getWeatherError)
+		fmt.Fprintf(weatherTextView, "Error, check error.log")
+		return
+	}
+
+	go fmt.Fprintf(
+		weatherTextView,
+		"Weather in: %s\nCurrent temp: [red]%d °F[white]\nFeels like: [red]%d °F[white]\n",
+		weatherInfo.Name,
+		int(weatherInfo.Main.Temp),
+		int(weatherInfo.Main.FeelsLike))
+}
+

@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -163,4 +164,38 @@ func GetCalendar() (*calendar.Events, error) {
 		return events, nil
 	}
 	return nil, err
+}
+
+func PopulateCalendarDisplay(calenderTextView *tview.TextView) {
+	events, err := GetCalendar()
+	if err != nil {
+		file, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		log.SetOutput(file)
+		log.Print(err)
+		fmt.Fprintf(calenderTextView, "%s","Error, check error.log")
+		return
+	}
+
+	statusIcons := [2]string{"✖️", "✅️"}
+
+	for _, event := range events.Items {
+		date, _ := time.Parse(time.RFC3339, event.Start.DateTime)
+		statusIcon := statusIcons[0]
+		for _, attendee := range event.Attendees {
+			if strings.ToLower(attendee.Email) == strings.ToLower(events.Summary) {
+				if strings.ToLower(attendee.ResponseStatus) == "accepted" {
+					statusIcon = statusIcons[1]
+				}
+			}
+		}
+
+		fmt.Fprintf(
+			calenderTextView,
+			"%s ️%v \n\t(%v)\n",
+			statusIcon, event.Summary, date.Format(time.ANSIC))
+	}
 }

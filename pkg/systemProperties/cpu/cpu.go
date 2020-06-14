@@ -1,7 +1,9 @@
 package cpu
 
 import (
+	"fmt"
 	"github.com/rivo/tview"
+	"log"
 	"os/exec"
 )
 
@@ -83,4 +85,15 @@ func GetInfo() (*Info, error) {
 
 	info.Brand = string(out)
 	return &info, nil
+}
+
+func PopulateCpuDisplay(cpuTextView *tview.TextView) {
+	// Cpu info
+	cpuInfo, err := GetInfo()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Cpu info to grid
+	fmt.Fprintf(cpuTextView, "%s", cpuInfo.Brand)
 }
